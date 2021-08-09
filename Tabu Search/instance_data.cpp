@@ -28,9 +28,28 @@ typedef pair<int, string> istr;
 typedef vector<istr> vistr;
 typedef vector< vector<int> > vvi;
 typedef vector< vector<ii> > vvii;
-
-int main()
+void instance_data::read_instance(string name)
 {
-    instance_data teste;
-    teste.read_instance("inst0");
+    instance_name = name;
+    instance_data::_read_instance();
+}
+void instance_data::_read_instance()
+{
+    string path = instance_path + instance_name +".txt";
+    FILE *instance_file;
+    instance_file = fopen(path.c_str(),"r");
+    char buffer[100];
+    string file_text;
+    if(instance_file == NULL)
+        puts("Error opening file");
+    else
+    {
+        while(feof(instance_file))
+        {
+            if(fgets(buffer, 100,instance_file) == NULL)
+                break;
+            file_text+=buffer;
+        }
+    }
+    cout<<file_text<<endl;
 }

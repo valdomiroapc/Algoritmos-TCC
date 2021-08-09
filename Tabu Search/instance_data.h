@@ -9,7 +9,6 @@
 #include <map>
 #include <string>
 #include <stack>
-#include "instance_data.h"
 using namespace std;
 #define ull unsigned long long int
 #define ll long long int
@@ -28,9 +27,14 @@ typedef pair<int, string> istr;
 typedef vector<istr> vistr;
 typedef vector< vector<int> > vvi;
 typedef vector< vector<ii> > vvii;
-
-int main()
+struct instance_data
 {
-    instance_data teste;
-    teste.read_instance("inst0");
-}
+    int T,V,L,k;
+    vector< vector<int> >d;
+    vector< int > delta;
+    vector< int > Dt;
+    string instance_name = "";
+    string instance_path = "C:\\Users\\valdo\\OneDrive\\Área de Trabalho\\TCC\\Algoritmos TCC\\Instâncias LKC";
+    void read_instance(string name);
+    void _read_instance();
+};
