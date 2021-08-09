@@ -8,6 +8,8 @@ class optimization:
         self.y = None
         self.z = None
         self.optimal_value = None
+        self.gap = None
+        self.runtime = None
 
     def read_instance(self,name = 'inst1'):
         self.data.read_instance(name)
@@ -65,11 +67,11 @@ class optimization:
                         exp += self.y[i,l,t_]
                 self.optimizer.addLConstr(exp <= 1)
 
-    def execute(self,time_limit = 3600.0):
+    def execute(self,time_limit):
         self.optimizer.Params.timeLimit = time_limit
         self.optimizer.optimize()
 
-    def run_optimization(self):
+    def run_optimization(self,time_limit = 3600.0):
         self.define_variables()
         self.define_objective()
         self.define_constraint1()
@@ -77,16 +79,11 @@ class optimization:
         self.define_constraint3()
         self.define_constraint4()
         self.define_constraint5()
-        self.execute()
-        self.optimal_value = self.optimizer.getObjective().getValue()
-
-
-
+        self.execute(time_limit)
+        self.optimal_value = self.optimizer.ObjVal
+        self.gap = self.optimizer.MIPGap*100.0
+        self.runtime = self.optimizer.Runtime
     
-opt = optimization()
-opt.read_instance()
-opt.run_optimization()
-print(opt.optimal_value)
 
 
 
