@@ -1,16 +1,8 @@
+#include <experimental/filesystem>
 #include <iostream>
-#include <vector>
-#include <algorithm>
-#include <queue>
-#include <stdio.h>
-#include <string.h>
-#include <math.h>
-#include <set>
-#include <map>
-#include <string>
-#include <stack>
 #include "instance_data.h"
 using namespace std;
+namespace fs = std::experimental::filesystem;
 #define ull unsigned long long int
 #define ll long long int
 #define pb push_back
@@ -35,21 +27,6 @@ void instance_data::read_instance(string name)
 }
 void instance_data::_read_instance()
 {
-    string path = instance_path + instance_name +".txt";
-    FILE *instance_file;
-    instance_file = fopen(path.c_str(),"r");
-    char buffer[100];
-    string file_text;
-    if(instance_file == NULL)
-        puts("Error opening file");
-    else
-    {
-        while(feof(instance_file))
-        {
-            if(fgets(buffer, 100,instance_file) == NULL)
-                break;
-            file_text+=buffer;
-        }
-    }
-    cout<<file_text<<endl;
+    fs::path file_path = instance_path;
+    cout<<file_path<<endl;
 }

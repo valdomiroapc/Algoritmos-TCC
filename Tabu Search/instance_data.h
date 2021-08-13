@@ -1,15 +1,6 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <queue>
-#include <stdio.h>
-#include <string.h>
-#include <math.h>
-#include <set>
-#include <map>
-#include <string>
-#include <stack>
+#include <experimental/filesystem>
 using namespace std;
+namespace fs = std::experimental::filesystem;
 #define ull unsigned long long int
 #define ll long long int
 #define pb push_back
@@ -33,8 +24,8 @@ struct instance_data
     vector< vector<int> >d;
     vector< int > delta;
     vector< int > Dt;
-    string instance_name = "";
-    string instance_path = "C:\\Users\\valdo\\OneDrive\\Área de Trabalho\\TCC\\Algoritmos TCC\\Instâncias LKC";
+    string instance_name;
+    fs::path instance_path = U"C:\\Users\\valdo\\OneDrive\\Área de Trabalho\\TCC\\Algoritmos TCC\\Instâncias LKC\\inst0.txt";
     void read_instance(string name);
     void _read_instance();
 };
