@@ -9,14 +9,14 @@ class instance:
         self.delta = None
         self.Dt = None
         self.instance_name = None
-        self.instance_path = r'C:\Users\valdo\OneDrive\Área de Trabalho\TCC\Algoritmos TCC\Instâncias LKC'
+        self.instance_path = r'/home/valdomiro/Programming/TCC/Algoritmos-TCC/Instâncias LKC'
     
     def read_instance(self, name):
         self.instance_name = name
         self.__read_instance()
     
     def __read_instance(self):
-        instance_full_path = self.instance_path + '\\' + self.instance_name + r'.txt'
+        instance_full_path = self.instance_path + '/' + self.instance_name + r'.txt'
         with open(instance_full_path, 'r') as instance_file:
             line = instance_file.readline()
             aux_list = line.split()
