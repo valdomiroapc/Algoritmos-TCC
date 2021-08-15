@@ -1,6 +1,4 @@
-#include <experimental/filesystem>
 using namespace std;
-namespace fs = std::experimental::filesystem;
 #define ull unsigned long long int
 #define ll long long int
 #define pb push_back
@@ -23,9 +21,8 @@ struct instance_data
     int T,V,L,k;
     vector< vector<int> >d;
     vector< int > delta;
-    vector< int > Dt;
+    vector< vector<int> > clients_at_time_t;
     string instance_name;
-    fs::path instance_path = U"C:\\Users\\valdo\\OneDrive\\Área de Trabalho\\TCC\\Algoritmos TCC\\Instâncias LKC\\inst0.txt";
-    void read_instance(string name);
-    void _read_instance();
+    void read_instance();
+    void print_instance();
 };
