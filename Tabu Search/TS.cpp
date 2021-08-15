@@ -32,5 +32,7 @@ typedef vector< vector<ii> > vvii;
 int main()
 {
     instance_data teste;
-    teste.read_instance("inst0");
+    teste.read_instance();
+    teste.print_instance();
+
 }
