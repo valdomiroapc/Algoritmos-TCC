@@ -33,6 +33,6 @@ int main()
 {
     instance_data teste;
     teste.read_instance();
-    teste.print_instance();
+    //teste.print_instance();
 
 }
