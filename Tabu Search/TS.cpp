@@ -11,7 +11,6 @@
 #include <stack>
 using namespace std;
 #define ull unsigned long long int
-#define ll long long int
 #define pb push_back
 #define mp make_pair
 #define fast_io cin.tie(0), cin.sync_with_stdio(false);
@@ -90,12 +89,87 @@ struct solution_representation
 {
     int initial_time;
     int locate;
-    int facility_type;
-    solution_representation(int t0,int i,int l)
+    int duration;
+    solution_representation(int t0,int i,int td)
     {
         initial_time = t0;
         locate = i;
-        facility_type = l;
+        duration = td;
+    }
+};
+struct segment_tree
+{
+    vector<int > arv;
+    vector<int> lazy;
+    int range;
+    segment_tree(int dimension)
+    {
+        arv = vector<int> (4*dimension,0);
+        lazy = vector<int> (arv.size(),0);
+        range = dimension-1;
+    }
+    void update_range(int no,int l,int r,int ll,int rr,int v)
+    {
+        if(lazy[no])
+        {
+            arv[no] += lazy[no];
+            if(l<r)
+            {
+                lazy[no*2] += lazy[no];
+                lazy[no*2+1] += lazy[no];
+            }
+            lazy[no] = 0;
+        }
+        if(l>rr or r<ll)
+            return; 
+        if(l>=ll and r<=rr)
+        {
+            arv[no] += v;
+            if(l<r)
+            {
+                lazy[no*2] += v;
+                lazy[no*2+1] += v;
+            }
+            return;
+        }
+        int m = (l+r)/2;
+        update_range(no*2,l,m,ll,rr,v);	
+        update_range(no*2+1,m+1,r,ll,rr,v);
+        arv[no] = max(arv[no*2],arv[no*2+1]);
+    }
+    int query(int no,int l,int r,int ll,int rr)
+    {
+        if(l>rr or r<ll)
+            return -10;
+        if(lazy[no])
+        {
+            arv[no] += lazy[no];
+            if(l<r)
+            {
+                lazy[no*2] += lazy[no];
+                lazy[no*2+1] += lazy[no];
+            }
+            lazy[no]=0;
+        }
+        if(l>=ll and r<=rr)
+            return arv[no];
+        int m = (l+r)/2;
+        long long int v1,v2;
+        v1=query(no*2,l,m,ll,rr);
+        v2=query(no*2+1,m+1,r,ll,rr);
+        return max(v1,v2);
+    }
+    int greater_of_the_interval(int l,int r)
+    {
+        return query(1,0,range,l,r);
+    }
+    void add_one_in_the_interval(int l,int r)
+    {
+        update_range(1,0,range,l,r,1);
+    }
+    void subtract_one_in_the_interval(int l,int r)
+    {
+        update_range(1,0,range,l,r,-1);
     }
 };
 struct solution
@@ -108,13 +182,12 @@ struct solution
         for(int t=0;t<data.T;t++)
         {
             for(int k=0;k<data.K;k++)
-                representation.pb(solution_representation(t,-1,-1));
+                representation.pb(solution_representation(t,-1,1));
         }
     }
+    
 };
 int main()
 {
-    dataset data;
-    data.read_instance();
-
+   
 }
