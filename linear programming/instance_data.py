@@ -9,7 +9,7 @@ class instance:
         self.delta = None
         self.Dt = None
         self.instance_name = None
-        self.instance_path = r'/home/valdomiro/Programming/TCC/Algoritmos-TCC/Instâncias LKC'
+        self.instance_path = r'/home/valdomiro/Programming/Algoritmos-TCC/Instâncias-LKC'
     
     def read_instance(self, name):
         self.instance_name = name

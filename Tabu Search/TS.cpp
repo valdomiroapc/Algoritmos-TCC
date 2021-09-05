@@ -29,7 +29,7 @@ typedef vector< vector<ii> > vvii;
 struct dataset
 {
     int V,T,L,K;
-    vector< vector<int> > distance;
+    vector< vector<double> > distance;
     vector<int>facility_duration;
     vector<vector<int> >clients;
     void read_instance()
@@ -38,11 +38,12 @@ struct dataset
         int x;
         for(int i=0;i<V;i++)
         {
-            vector<int>line;
+            vector<double>line;
+            double y;
             for(int j=0;j<V;j++)
             {
-                scanf("%d",&x);
-                line.pb(x);
+                scanf("%lf",&y);
+                line.pb(y);
             }
             distance.pb(line);
         }
@@ -70,7 +71,7 @@ struct dataset
         for(int i=0;i<V;i++)
         {
             for(int j=0;j<V;j++)
-                printf("%d ",distance[i][j]);
+                printf("%lf ",distance[i][j]);
             puts("");
         }
         puts("");
@@ -83,18 +84,6 @@ struct dataset
                 printf("%d ", clients[i][j]);
             puts("");
         }
-    }
-};
-struct solution_representation
-{
-    int initial_time;
-    int locate;
-    int duration;
-    solution_representation(int t0,int i,int td)
-    {
-        initial_time = t0;
-        locate = i;
-        duration = td;
     }
 };
 struct segment_tree
@@ -175,19 +164,106 @@ struct segment_tree
 struct solution
 {
     dataset data;
-    vector <solution_representation> representation;
-    solution(dataset current_data)
+    vector< segment_tree > facilities_in_time_info;
+    segment_tree *time_frame;
+    vector< vector<pair<double,int> > > connection_matrix;
+    double objective_distance;
+    bool is_invalid;
+    void fill_connection_matrix()//O(V²logV)
     {
-        data = current_data;
-        for(int t=0;t<data.T;t++)
+        for(int i=0;i<data.V;i++)
         {
-            for(int k=0;k<data.K;k++)
-                representation.pb(solution_representation(t,-1,1));
+            vector<pair<double,int> > connection_list;
+            for(int j=0;j<data.V;j++)
+            {
+                if(i == j)
+                    continue;
+                connection_list.pb({data.distance[i][j],j});
+            }
+            sort(connection_list.begin(),connection_list.end());
+            connection_matrix.pb(connection_list);
         }
     }
-    
+    solution(dataset current_data)//O((V*T)+(V²logV))
+    {
+        data = current_data;
+        time_frame = new segment_tree(data.T);
+        for(int i=0;i<data.V;i++)
+            facilities_in_time_info.pb(segment_tree(data.T));
+        is_invalid = false;
+        objective_distance = 100000000.0;
+        fill_connection_matrix();
+    }
+    bool is_facility_open_in_interval(int v,int l,int r)//O(logT)
+    {
+        return facilities_in_time_info[v].greater_of_the_interval(l,r);
+    }
+    void open_facility_in_interval(int v,int l,int r)//O(logT)
+    {
+        facilities_in_time_info[v].add_one_in_the_interval(l,r);
+    }
+    void close_facility_in_interval(int v,int l,int r)//O(logT)
+    {
+        facilities_in_time_info[v].subtract_one_in_the_interval(l,r);
+    }
+    bool open_facility(int instant,int facility_idx,int facility_type_idx)//O(logT)
+    {
+        int duration = data.facility_duration[facility_type_idx];
+        if(is_facility_open_in_interval(facility_idx,instant,instant+duration-1))
+            return false;
+        
+        int number_of_open_facilities = time_frame->greater_of_the_interval(instant,instant+duration-1);
+        if(number_of_open_facilities > data.K)
+            return false;
+        time_frame->add_one_in_the_interval(instant,instant+duration-1);
+        open_facility_in_interval(facility_idx,instant,instant+duration-1);
+        return true;
+    }
+    bool close_facility(int instant,int facility_idx,int facility_type_idx)//O(logT)
+    {
+        int duration = data.facility_duration[facility_type_idx];
+        if(!is_facility_open_in_interval(facility_idx,instant,instant+duration-1))
+            return false;
+        int number_of_open_facilities = time_frame->greater_of_the_interval(instant,instant+duration-1);
+        if(!number_of_open_facilities)
+            return false;
+        time_frame->subtract_one_in_the_interval(instant,instant+duration-1);
+        close_facility_in_interval(facility_idx,instant,instant+duration-1);
+        return true;
+    }
+    bool is_facility_open_at_instant_t(int v,int t)//O(logT)
+    {
+        return facilities_in_time_info[v].greater_of_the_interval(t,t);
+    }
+    double objective_function()//O(T*V²)
+    {
+        double invalid_value = 1000000000.0;
+        int size = connection_matrix[0].size();
+        double objective_value = 0.0;
+        for(int t=0;t<data.T;t++)
+        {
+            for(int c:data.clients[t])
+            {
+                bool has_facility = false;
+                for(int v=0;v<size;v++)
+                {
+                    if(is_facility_open_at_instant_t(connection_matrix[c][v].second,t))
+                    {
+                        objective_value = max(objective_value,connection_matrix[c][v].first);
+                    }
+                }
+                if(!has_facility)
+                {
+                    is_invalid = true;
+                    return invalid_value;
+                }
+            }
+        }
+        is_invalid = false;
+        return objective_value;
+    }
 };
 int main()
 {
-   
+
 }
